@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <style>
+    @keyframes captain-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+    @keyframes glint { 0%, 65%, 100% { opacity: .25; transform: scale(.75) rotate(0deg); } 78% { opacity: 1; transform: scale(1) rotate(18deg); } }
+    .captain { transform-origin: 64px 71px; animation: captain-bob 2.8s ease-in-out infinite; }
+    .glint { transform-origin: 102px 27px; animation: glint 3.8s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce) { .captain, .glint { animation: none; } }
+  </style>
+  <rect width="128" height="128" rx="30" fill="#E86B45"/>
+  <circle cx="64" cy="64" r="53" fill="#F6F0E7"/>
+  <g class="captain">
+    <path d="M24 120c2-19 16-31 40-31s38 12 40 31H24Z" fill="#19323A"/>
+    <path d="m49 90 15 15 15-15-5-12H54l-5 12Z" fill="#E7A990"/>
+    <path d="m48 91 16 15-12 14H31c2-14 7-23 17-29Zm32 0-16 15 12 14h33c-2-14-7-23-17-29Z" fill="#294B53"/>
+    <path d="m55 96 9 10 9-10-4-5h-9l-5 5Z" fill="#F6F0E7"/>
+    <path d="M38 53c0-19 11-31 27-31s27 12 27 31v15c0 19-12 31-27 31S38 87 38 68V53Z" fill="#D99B83"/>
+    <path d="M36 53c0-23 13-37 33-37 16 0 28 9 31 25-9-5-19-7-29-6-12 1-22 7-30 18l-5 11V53Z" fill="#19323A"/>
+    <path d="M32 51c11-14 25-22 42-22 10 0 19 2 27 7l-2 11c-10-5-20-7-30-6-14 1-25 7-34 19l-3-9Z" fill="#294B53"/>
+    <path d="M42 50c9-10 20-15 33-15 8 0 15 1 22 4" stroke="#F6F0E7" stroke-width="4" stroke-linecap="round"/>
+    <path d="M53 66h1m20 0h1" stroke="#19323A" stroke-width="4" stroke-linecap="round"/>
+    <path d="M57 78c4 4 10 4 14 0" stroke="#19323A" stroke-width="3" stroke-linecap="round"/>
+    <path d="M40 62c-5-2-8 1-8 6s4 8 9 7m47-13c5-2 8 1 8 6s-4 8-9 7" fill="#D99B83"/>
+  </g>
+  <path class="glint" d="m102 17 2.5 7.5L112 27l-7.5 2.5L102 37l-2.5-7.5L92 27l7.5-2.5L102 17Z" fill="#F6F0E7"/>
+</svg>
