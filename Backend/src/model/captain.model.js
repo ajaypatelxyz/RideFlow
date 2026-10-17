@@ -62,7 +62,7 @@ const captainSchema = new mongoose.Schema({
         }
     }
 }, {
-    // timestamps: true
+    timestamps: true
 })
 
 const captainModel = mongoose.model("Captain", captainSchema);
