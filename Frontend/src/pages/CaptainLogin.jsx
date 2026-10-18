@@ -40,7 +40,7 @@ const CaptainLogin = () => {
 
         <div className="flex flex-1 items-center justify-center pb-12 pt-5 sm:pb-16">
           <section className="w-full max-w-[430px]">
-            <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.2em] text-[#657c7c]">RideFlow for captains</p>
+            <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.2em] text-[#657c7c]">Captain Login</p>
             <h1 className="font-display text-4xl font-bold leading-tight text-[#19323a] sm:text-5xl">Welcome back.</h1>
             <p className="mt-3 text-sm leading-6 text-[#626e6b] sm:text-base">Sign in to continue with RideFlow.</p>
 

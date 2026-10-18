@@ -1,6 +1,50 @@
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import {UserDataContext} from '../context/UserContext'
 
 const UserRegister = () => {
+
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+
+  const navigate = useNavigate()
+  const {user, setUser} = React.useContext(UserDataContext)
+
+  const submitHandler = async(e) => {
+
+    e.preventDefault()
+    const userData = {
+      fullName: {
+        firstName: firstName,
+        lastName: lastName
+      },
+      email: email,
+      password: password
+    }
+    
+    const response = await axios.post('http://localhost:3000/api/auth/user/register', userData, {
+      withCredentials: true
+    })
+
+    if(response.status === 201){
+      const data = response.data
+
+      setUser(data.user)
+      navigate('/home')
+
+    }
+
+    setEmail('')
+    setPassword('')
+    setFirstName('')
+    setLastName('')
+
+  }
+
   return (
     <main className="min-h-svh bg-[#f6f0e7] text-[#19323a]">
       <div aria-hidden="true" className="absolute inset-x-0 top-0 h-2 bg-[#efb4a5]" />
@@ -25,7 +69,7 @@ const UserRegister = () => {
             <h1 className="font-display text-4xl font-bold leading-tight text-[#19323a] sm:text-5xl">Create account.</h1>
             <p className="mt-3 text-sm leading-6 text-[#626e6b] sm:text-base">Your details help us set up your rider profile.</p>
 
-            <form onSubmit={(event) => event.preventDefault()} className="mt-8 space-y-5 sm:mt-9">
+            <form onSubmit={submitHandler} className="mt-8 space-y-5 sm:mt-9">
               <fieldset className="min-w-0 border-0 p-0">
                 <legend className="mb-2 text-sm font-semibold text-[#19323a]">Full name</legend>
                 <div className="grid grid-cols-2 gap-3">
@@ -35,6 +79,10 @@ const UserRegister = () => {
                       id="firstName"
                       name="fullName.firstName"
                       type="text"
+                      value={firstName}
+                      onChange={(e) => {
+                        setFirstName(e.target.value)
+                      }}
                       minLength={3}
                       required
                       autoComplete="given-name"
@@ -48,6 +96,10 @@ const UserRegister = () => {
                       id="lastName"
                       name="fullName.lastName"
                       type="text"
+                      value={lastName}
+                      onChange={(e) => {
+                        setLastName(e.target.value)
+                      }}
                       autoComplete="family-name"
                       placeholder="Last name"
                       className="h-14 min-w-0 w-full rounded-[5px] border border-[#d8d8cf] bg-white px-3 text-sm text-[#19323a] outline-none transition-shadow placeholder:text-[#969c94] focus:border-[#19323a] focus:ring-2 focus:ring-[#19323a]/10 sm:px-4 sm:text-base"
@@ -62,6 +114,10 @@ const UserRegister = () => {
                   id="email"
                   name="email"
                   type="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value)
+                  }}
                   required
                   autoComplete="email"
                   placeholder="you@example.com"
@@ -75,6 +131,10 @@ const UserRegister = () => {
                   id="password"
                   name="password"
                   type="password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value)
+                  }}
                   required
                   autoComplete="new-password"
                   placeholder="Create a password"
