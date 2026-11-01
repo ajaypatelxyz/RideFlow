@@ -1,7 +1,66 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import { CaptainDataContext } from '../context/CaptainContext'
 
 const CaptainRegister = () => {
+
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [colour, setColour] = useState('')
+  const [plate, setPlate] = useState('')
+  const [capacity, setCapacity] = useState('')
+  const [vehicleType, setVehicleType] = useState('')
+
+  const navigate = useNavigate();
+  const {setCaptain} = React.useContext(CaptainDataContext)
+
+  const submitHandler = async(e) => {
+
+    e.preventDefault()
+
+    const captainData = {
+      fullName: {
+        firstName: firstName,
+        lastName: lastName
+      },
+      email: email,
+      password: password,
+      vehicle: {
+        color: colour,
+        plate: plate,
+        capacity: capacity,
+        vehicleType: vehicleType
+      }
+    }
+
+    const response = await axios.post('http://localhost:3000/api/auth/captain/register', captainData, {
+      withCredentials: true
+    })
+
+    if(response.status === 201){
+
+      const data = response.data
+      setCaptain(data.captain)
+      localStorage.setItem('token', data.token)
+      navigate('/captain-home')
+
+    }
+
+    setFirstName('')
+    setLastName('')
+    setEmail('')
+    setPassword('')
+    setColour('')
+    setPlate('')
+    setCapacity('')
+    setVehicleType('')
+
+  }
+
   return (
     <main className="min-h-svh bg-[#f6f0e7] text-[#19323a]">
       <div aria-hidden="true" className="absolute inset-x-0 top-0 h-2 bg-[#efb4a5]" />
@@ -26,7 +85,7 @@ const CaptainRegister = () => {
             <h1 className="font-display text-4xl font-bold leading-tight text-[#19323a] sm:text-5xl">Join RideFlow.</h1>
             <p className="mt-3 text-sm leading-6 text-[#626e6b] sm:text-base">Create your captain profile and add your vehicle details.</p>
 
-            <form onSubmit={(event) => event.preventDefault()} className="mt-8 space-y-5 sm:mt-9">
+            <form onSubmit={submitHandler} className="mt-8 space-y-5 sm:mt-9">
               <fieldset className="min-w-0 border-0 p-0">
                 <legend className="mb-2 text-sm font-semibold text-[#19323a]">Full name</legend>
                 <div className="grid grid-cols-2 gap-3">
@@ -36,6 +95,10 @@ const CaptainRegister = () => {
                       id="captain-first-name"
                       name="fullName.firstName"
                       type="text"
+                      value={firstName}
+                      onChange={(e) => {
+                        setFirstName(e.target.value)
+                      }}
                       minLength={3}
                       required
                       autoComplete="given-name"
@@ -49,6 +112,10 @@ const CaptainRegister = () => {
                       id="captain-last-name"
                       name="fullName.lastName"
                       type="text"
+                      value={lastName}
+                      onChange={(e) => {
+                        setLastName(e.target.value)
+                      }}
                       autoComplete="family-name"
                       placeholder="Last name"
                       className="h-14 min-w-0 w-full rounded-[5px] border border-[#d8d8cf] bg-white px-3 text-sm text-[#19323a] outline-none transition-shadow placeholder:text-[#969c94] focus:border-[#19323a] focus:ring-2 focus:ring-[#19323a]/10 sm:px-4 sm:text-base"
@@ -63,6 +130,10 @@ const CaptainRegister = () => {
                   id="captain-register-email"
                   name="email"
                   type="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value)
+                  }}
                   required
                   autoComplete="email"
                   autoCapitalize="none"
@@ -77,6 +148,10 @@ const CaptainRegister = () => {
                   id="captain-register-password"
                   name="password"
                   type="password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value)
+                  }}
                   required
                   autoComplete="new-password"
                   placeholder="Create a password"
@@ -93,6 +168,10 @@ const CaptainRegister = () => {
                       id="vehicle-color"
                       name="vehicle.color"
                       type="text"
+                      value={colour}
+                      onChange={(e) => {
+                        setColour(e.target.value)
+                      }}
                       minLength={3}
                       required
                       placeholder="e.g. Black"
@@ -105,6 +184,10 @@ const CaptainRegister = () => {
                       id="vehicle-plate"
                       name="vehicle.plate"
                       type="text"
+                      value={plate}
+                      onChange={(e) => {
+                        setPlate(e.target.value)
+                      }}
                       minLength={3}
                       required
                       autoCapitalize="characters"
@@ -118,6 +201,10 @@ const CaptainRegister = () => {
                       id="vehicle-capacity"
                       name="vehicle.capacity"
                       type="number"
+                      value={capacity}
+                      onChange={(e) => {
+                        setCapacity(e.target.value)
+                      }}
                       min={1}
                       step={1}
                       required
@@ -130,8 +217,11 @@ const CaptainRegister = () => {
                     <select
                       id="vehicle-type"
                       name="vehicle.vehicleType"
+                      value={vehicleType}
+                      onChange={(e) => {
+                        setVehicleType(e.target.value)
+                      }}
                       required
-                      defaultValue=""
                       className="h-14 min-w-0 w-full rounded-[5px] border border-[#d8d8cf] bg-white px-3 text-sm text-[#19323a] outline-none transition-shadow focus:border-[#19323a] focus:ring-2 focus:ring-[#19323a]/10 sm:px-4 sm:text-base"
                     >
                       <option value="" disabled>Select type</option>
