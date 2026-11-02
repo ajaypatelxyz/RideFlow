@@ -1,5 +1,6 @@
 const captainModel = require('../model/captain.model');
 const jwt = require('jsonwebtoken');
+const blacklistTokenModel = require('../model/blacklistToken.model')
 
 const captainMiddleware = async(req, res, next) => {
 
@@ -11,7 +12,7 @@ const captainMiddleware = async(req, res, next) => {
         })
     }
 
-    const isBlacklisted = await captainModel.findOne({token});
+    const isBlacklisted = await blacklistTokenModel.findOne({token});
 
     if(isBlacklisted){
         return res.status(401).json({

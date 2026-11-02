@@ -8,7 +8,7 @@ router.post('/captain/register', captainController.registerCaptain)
 
 router.post('/captain/login', captainController.loginCaptain)
 
-router.post('/captain/profile', captainMiddleware.captainMiddleware, captainController.getCaptainProfile)
+router.get('/captain/profile', captainMiddleware.captainMiddleware, captainController.getCaptainProfile)
 
 router.get('/captain/logout', captainController.logoutCaptain)
 

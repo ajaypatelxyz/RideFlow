@@ -34,6 +34,7 @@ const registerCaptain = async(req, res) => {
 
     res.status(201).json({
         message: "Captain register successfully",
+        token,
         captain: {
             _id: captain._id,
             fullName: captain.fullName,
@@ -74,6 +75,7 @@ const loginCaptain = async(req, res) => {
 
     res.status(200).json({
         message: "Captain login successfully",
+        token,
         captain: {
             _id: captain._id,
             fullName: captain.fullName,

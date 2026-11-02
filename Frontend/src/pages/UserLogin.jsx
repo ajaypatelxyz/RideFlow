@@ -8,39 +8,82 @@ const UserLogin = () => {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [userData, setUserData] = useState({})
+    const [message, setMessage] = useState(null)
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     const navigate = useNavigate();
-    const {user, setUser} = useContext(UserDataContext)
+    const {setUser} = useContext(UserDataContext)
 
     const submitHandler = async(e) => {
 
         e.preventDefault()
+        setMessage(null)
+        setIsSubmitting(true)
         const userData = {
           email: email,
           password: password
         }
 
-        const response = await axios.post('http://localhost:3000/api/auth/user/login', userData, {
-          withCredentials: true
-        })
+        try {
+          const response = await axios.post('http://localhost:3000/api/auth/user/login', userData, {
+            withCredentials: true
+          })
 
-        if(response.status === 200){
+          if(response.status === 200){
 
-          const data = response.data
-          setUser(data.user)
-          localStorage.setItem('token', data.token)
-          navigate('/home')
+            const data = response.data
+            setUser(data.user)
+            localStorage.setItem('token', data.token)
+            setMessage({ type: 'success', text: 'Login successful!' })
+            setTimeout(() => navigate('/home'), 1200)
 
+          }
+
+          setEmail('')
+          setPassword('')
+        } catch (error) {
+          if(error.response?.status === 401){
+            setMessage({ type: 'error', text: 'Invalid email or password' })
+          } else {
+            setMessage({ type: 'error', text: 'Unable to log in right now. Please try again.' })
+          }
+        } finally {
+          setIsSubmitting(false)
         }
-
-        setEmail('')
-        setPassword('')
 
     }
 
   return (
     <main className="min-h-svh bg-[#f6f0e7] text-[#19323a]">
+      {message && (
+        <div
+          role={message.type === 'error' ? 'alert' : 'status'}
+          aria-live={message.type === 'error' ? 'assertive' : 'polite'}
+          className={`fixed bottom-5 left-1/2 z-50 flex w-[calc(100%-2rem)] max-w-md -translate-x-1/2 items-center gap-2 rounded-full border bg-white px-3 py-2 shadow-lg ${
+            message.type === 'success' ? 'border-[#9ab8a6]' : 'border-[#e5a89a]'
+          }`}
+        >
+          <span className={`flex size-6 shrink-0 items-center justify-center rounded-full text-xs ${
+            message.type === 'success' ? 'bg-[#e7f0e9] text-[#315d43]' : 'bg-[#f9e9e5] text-[#a64131]'
+          }`} aria-hidden="true">
+            {message.type === 'success' ? '✓' : '!'}
+          </span>
+          <div className="flex-1 text-xs leading-4 text-[#626e6b]">
+            <p className="inline font-bold text-[#19323a]">
+              {message.type === 'success' ? 'You’re signed in' : 'Login unsuccessful'}
+            </p>
+            <p className="inline"> — {message.text}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setMessage(null)}
+            aria-label="Dismiss message"
+            className="shrink-0 rounded-full px-1 text-base leading-5 text-[#657c7c] hover:text-[#19323a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d96950]"
+          >
+            ×
+          </button>
+        </div>
+      )}
       <div aria-hidden="true" className="absolute inset-x-0 top-0 h-2 bg-[#efb4a5]" />
       <div className="mx-auto flex min-h-svh w-full max-w-6xl flex-col px-6 sm:px-10 lg:px-14">
         <header className="flex h-20 items-center justify-between">
@@ -96,8 +139,8 @@ const UserLogin = () => {
                 />
               </div>
 
-              <button type="submit" className="flex h-14 w-full items-center justify-between rounded-[5px] bg-[#19323a] px-5 text-sm font-bold text-white transition-colors hover:bg-[#294b53] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d96950] sm:text-base">
-                <span>Log in</span>
+              <button type="submit" disabled={isSubmitting} className="flex h-14 w-full items-center justify-between rounded-[5px] bg-[#19323a] px-5 text-sm font-bold text-white transition-colors hover:bg-[#294b53] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d96950] disabled:cursor-not-allowed disabled:opacity-70 sm:text-base">
+                <span>{isSubmitting ? 'Signing in...' : 'Log in'}</span>
                 <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5" fill="none">
                   <path d="M4.5 12h14m-6-6 6 6-6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
