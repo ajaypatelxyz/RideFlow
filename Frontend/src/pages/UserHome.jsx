@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { UserDataContext } from '../context/UserContext'
+import ConfirmRide from './ConfirmRide'
+import WaitingForDriver from './WaitingForDriver'
 
 const UserHome = () => {
   const [pickup, setPickup] = useState('')
@@ -8,6 +10,8 @@ const UserHome = () => {
   const [activeLocation, setActiveLocation] = useState('pickup')
   const [isPickupExpanded, setIsPickupExpanded] = useState(false)
   const [isVehicleExpanded, setIsVehicleExpanded] = useState(false)
+  const [isConfirmExpanded, setIsConfirmExpanded] = useState(false)
+  const [isSearchingDriver, setIsSearchingDriver] = useState(false)
   const [selectedVehicle, setSelectedVehicle] = useState('')
   const [locationMessage, setLocationMessage] = useState('')
   const {user} = useContext(UserDataContext)
@@ -19,15 +23,13 @@ const UserHome = () => {
     const nextPickup = location === 'pickup' ? value : pickup
     const nextDestination = location === 'destination' ? value : destination
 
-    if (
-      nextPickup.trim() &&
-      nextDestination.trim() &&
-      normalizeLocation(nextPickup) === normalizeLocation(nextDestination)
-    ) {
+    if (nextPickup.trim() && nextDestination.trim() &&
+      normalizeLocation(nextPickup) === normalizeLocation(nextDestination)) {
       setLocationMessage('Pickup and destination cannot be the same place.')
-    } else {
-      setLocationMessage('')
+      return
     }
+
+    setLocationMessage('')
 
     if (location === 'pickup') {
       setPickup(value)
@@ -77,20 +79,24 @@ const UserHome = () => {
       description: 'Affordable, comfortable rides',
       capacity: '4 seats',
       icon: '🚘',
+      price: '₹193.20',
     },
     {
       name: 'Bike',
       description: 'A quick ride through the city',
       capacity: '1 seat',
       icon: '🏍️',
+      price: '₹65.00',
     },
     {
       name: 'Auto',
       description: 'Easy city travel',
       capacity: '3 seats',
       icon: '🛺',
+      price: '₹118.86',
     },
   ]
+  const selectedVehicleDetails = vehicles.find((vehicle) => vehicle.name === selectedVehicle)
 
   return (
     <main className="relative min-h-[100svh] overflow-hidden bg-[#e8ebe4] text-[#19323a]">
@@ -198,14 +204,49 @@ const UserHome = () => {
       </header>
 
       <section className={`absolute inset-x-0 bottom-0 z-10 flex flex-col overflow-hidden border-t border-white/80 bg-[#fffefa] px-5 pb-6 pt-3 shadow-[0_-12px_40px_rgba(25,50,58,0.12)] transition-[height] duration-500 ease-in-out sm:bottom-6 sm:left-6 sm:right-auto sm:w-[460px] sm:rounded-[24px] sm:border sm:p-7 ${
-        isVehicleExpanded
-          ? 'h-[50svh] rounded-t-[28px] sm:h-[min(520px,65svh)]'
+        isSearchingDriver
+          ? 'h-[min(620px,72svh)] rounded-t-[28px] sm:h-[min(600px,75svh)]'
+          : isConfirmExpanded
+          ? 'h-[min(620px,72svh)] rounded-t-[28px] sm:h-[min(600px,75svh)]'
+          : isVehicleExpanded
+          ? 'h-[min(620px,68svh)] rounded-t-[28px] sm:h-[min(560px,70svh)]'
           : isPickupExpanded
           ? 'h-[100svh] rounded-none sm:h-[min(760px,88svh)] sm:rounded-[24px]'
           : 'h-[min(370px,82svh)] rounded-t-[28px] sm:h-[410px]'
       }`}>
         <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-[#d8d8cf] sm:hidden" />
-        {isVehicleExpanded ? (
+        {isSearchingDriver ? (
+          <div className="mb-3 flex shrink-0 items-center">
+            <button
+              type="button"
+              onClick={() => {
+                setIsSearchingDriver(false)
+                setIsConfirmExpanded(true)
+              }}
+              aria-label="Back to ride confirmation"
+              className="flex size-9 items-center justify-center rounded-full text-[#19323a] transition hover:bg-[#f1f0eb] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d96950]"
+            >
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 rotate-90" fill="none">
+                <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <h2 className="ml-2 text-base font-bold text-[#19323a]">Ride request</h2>
+          </div>
+        ) : isConfirmExpanded ? (
+          <div className="mb-3 flex shrink-0 items-center">
+            <button
+              type="button"
+              onClick={() => setIsConfirmExpanded(false)}
+              aria-label="Back to vehicle selection"
+              className="flex size-9 items-center justify-center rounded-full text-[#19323a] transition hover:bg-[#f1f0eb] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d96950]"
+            >
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 rotate-90" fill="none">
+                <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <h2 className="ml-2 text-base font-bold text-[#19323a]">Confirm your ride</h2>
+          </div>
+        ) : isVehicleExpanded ? (
           <div className="mb-3 flex shrink-0 items-center">
             <button
               type="button"
@@ -239,13 +280,13 @@ const UserHome = () => {
             </span>
           </div>
         )}
-        {!isVehicleExpanded && <div className="mb-5 shrink-0">
+        {!isVehicleExpanded && !isSearchingDriver && <div className="mb-5 shrink-0">
           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#657c7c]">RideFlow rides</p>
           <h1 className="mt-1 font-display text-2xl font-bold tracking-tight text-[#19323a]">Find a trip</h1>
           <p className="mt-1 text-sm text-[#697572]">Where would you like to go?</p>
         </div>}
 
-        {!isVehicleExpanded && <div className="relative shrink-0 space-y-2.5">
+        {!isVehicleExpanded && !isSearchingDriver && <div className="relative shrink-0 space-y-2.5">
           <div className="pointer-events-none absolute bottom-9 left-[19px] top-9 border-l border-dashed border-[#9da9a2]" />
           <label className="relative flex h-[54px] items-center gap-3 rounded-xl border border-[#ecebe5] bg-[#f5f4ef] px-3 transition focus-within:border-[#8da4a0] focus-within:bg-white">
             <span className="z-10 flex size-[14px] shrink-0 items-center justify-center rounded-full border-[3px] border-[#19323a] bg-[#f5f4ef]" aria-hidden="true" />
@@ -301,7 +342,27 @@ const UserHome = () => {
           </label>
         </div>}
 
-        {isVehicleExpanded && (
+        {isSearchingDriver && selectedVehicleDetails ? (
+          <WaitingForDriver
+            pickup={pickup}
+            destination={destination}
+            vehicle={selectedVehicleDetails}
+            onCancel={() => {
+              setIsSearchingDriver(false)
+              setIsConfirmExpanded(true)
+            }}
+          />
+        ) : isConfirmExpanded && selectedVehicleDetails ? (
+          <ConfirmRide
+            pickup={pickup}
+            destination={destination}
+            vehicle={selectedVehicleDetails}
+            onConfirm={() => {
+              setIsConfirmExpanded(false)
+              setIsSearchingDriver(true)
+            }}
+          />
+        ) : isVehicleExpanded && (
           <>
             <div className="mb-3 flex shrink-0 items-center gap-2 rounded-lg bg-[#f5f4ef] px-3 py-2 text-xs text-[#536562]">
               <span className="max-w-[45%] truncate font-semibold text-[#19323a]">{pickup}</span>
@@ -346,7 +407,7 @@ const UserHome = () => {
             <button
               type="button"
               disabled={!selectedVehicle}
-              onClick={() => setIsVehicleExpanded(false)}
+              onClick={() => setIsConfirmExpanded(true)}
               className="mt-3 flex min-h-12 w-full shrink-0 items-center justify-center rounded-xl bg-[#19323a] px-4 text-sm font-bold text-white transition-colors hover:bg-[#294b53] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d96950] disabled:cursor-not-allowed disabled:bg-[#aab4ae]"
             >
               {selectedVehicle ? `Select ${selectedVehicle}` : 'Select a vehicle'}
@@ -424,7 +485,9 @@ const UserHome = () => {
           aria-live="assertive"
           className="absolute bottom-5 left-1/2 z-20 flex w-[calc(100%-2rem)] max-w-md -translate-x-1/2 items-center gap-2 rounded-full border border-[#e5a89a] bg-white px-4 py-3 text-sm font-medium text-[#19323a] shadow-lg"
         >
-          <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[#f9e9e5] text-xs font-bold text-[#a64131]" aria-hidden="true">!</span>
+          <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[#f9e9e5] text-xs font-bold text-[#a64131]" aria-hidden="true">
+            !
+          </span>
           <span>{locationMessage}</span>
         </div>
       )}

@@ -1,40 +1,35 @@
 # RideFlow
 
-RideFlow is a ride-hailing application in development. It has a React-based web client and an Express API backed by MongoDB. The current work covers the branded entry experience, rider and captain account screens, authentication endpoints, and initial protected dashboard routes. Booking and trip operations are not implemented yet.
+RideFlow is a ride-hailing app in development, with a React web frontend and an Express API backed by MongoDB. It includes rider and captain account flows and interactive ride-booking/dashboard UI. Ride matching, navigation, and ride transactions are currently represented by frontend demo data and are not connected to a live ride service.
 
-## What is implemented
+## Features
 
-### Web application
+### Rider experience
 
-- Responsive RideFlow welcome page with animated rider and cityscape artwork. The animation respects the visitor's reduced-motion preference.
-- Rider and captain login and registration pages with labeled fields, autocomplete hints, and browser validation.
-- Captain registration collects vehicle color, license plate, passenger capacity, and vehicle type (`bike`, `car`, or `auto`).
-- React Router routes for public account screens and initial protected rider and captain pages.
-- React contexts for rider and captain account state. The captain provider also has loading and error state; its `useCaptain` hook is currently commented out.
-- A RideFlow visual theme using cream, peach, deep teal, and coral colors.
+- Branded, responsive landing, login, and registration pages.
+- Protected rider home screen with an illustrated map and a mobile-friendly booking panel.
+- Pickup and destination entry with suggested locations. The same place cannot be selected as both pickup and destination.
+- Vehicle selection for Car, Bike, and Auto, followed by a trip confirmation panel with a sample fare.
+- A “Waiting for a driver” panel after ride confirmation, showing the selected vehicle, trip locations, and sample fare. The search can be canceled to return to ride confirmation.
 
-### API and data
+### Captain experience
+
+- Captain registration includes vehicle color, plate, passenger capacity, and vehicle type (`bike`, `car`, or `auto`).
+- Protected captain dashboard with an illustrated route map, captain and vehicle details, and sample earnings/activity stats.
+- A sample incoming ride request panel with passenger, pickup, destination, estimated fare, and pickup distance.
+- OTP confirmation preview (demo OTP: `1234`). Declining returns to the dashboard; entering the demo OTP accepts the ride.
+- Accepted rides show a compact ride-progress panel with sample remaining distance and time. Completing the ride opens a finish screen; its button returns to the captain dashboard.
+
+### Authentication and API
 
 - Separate rider and captain registration, login, profile, and logout endpoints.
-- Password hashing with `bcrypt` and signed JSON Web Tokens (JWTs) with a 24-hour lifetime.
-- MongoDB persistence through Mongoose, including user, captain, vehicle, and blacklisted-token schemas.
-- Middleware for authenticating rider and captain profile requests using a token cookie or bearer token.
-- Logout handlers that clear the token cookie and record tokens for expiration-based cleanup.
+- Password hashing with `bcrypt`; JWTs expire after 24 hours.
+- MongoDB persistence through Mongoose and protected profile endpoints.
+- Token blacklist records are used by logout handlers and configured to expire after 24 hours.
 
-### Current development status
+## Demo limitations
 
-The frontend account forms call the corresponding API endpoints, and the backend authentication routes and models are present. Authentication is not yet reliable end to end because the client and server currently disagree about how to store and send the JWT:
-
-- The API sets the JWT as a `token` cookie but does not include a `token` property in registration or login JSON responses.
-- Frontend registration and login screens read `data.token` and write it to local storage, so this value is currently undefined.
-- The protected frontend wrappers read the token from local storage and send it as a bearer token. They do not currently use the cookie-only authentication flow.
-- The protected frontend profile wrappers call `GET`; the backend profile endpoints are registered as `POST`.
-- Authentication middleware checks the user or captain collection for a `token` field instead of checking the blacklisted-token collection. The logout controllers do use the blacklist collection.
-- Frontend API URLs are hard-coded to `http://localhost:3000`; a deployment-specific API base URL has not been configured.
-
-The API defines a captain logout endpoint, but the frontend router does not currently register a captain logout page. The rider and captain home pages are placeholders; the rider home page currently only displays placeholder text. Captain context exports `CaptainDataContext`; its custom `useCaptain` hook is commented out.
-
-Ride requests, driver discovery, trip matching, maps, live location, fare calculation, payments, and ride history have not been implemented.
+The ride screens are UI previews, not a live booking system. The passenger, route, fare, pickup distance, statistics, ride distance/time, and OTP are sample values. There is no ride-request API, driver matching, WebSocket service, geocoding, live map/location tracking, navigation, real fare calculation, payment processing, or ride-history service. A successful demo OTP entry changes the captain UI state only.
 
 ## Technology
 
@@ -51,64 +46,46 @@ Ride requests, driver discovery, trip matching, maps, live location, fare calcul
 RideFlow/
   README.md
   Backend/
-    .gitignore
-    package.json
-    package-lock.json
     server.js
+    package.json
     src/
       app.js
       controllers/
-        auth.controller.js
-        captain.controller.js
       db/
-        db.js
       middleware/
-        auth.middleware.js
-        captain.middleware.js
       model/
-        blacklistToken.model.js
-        captain.model.js
-        user.model.js
       router/
-        auth.routes.js
-        captain.routes.js
   Frontend/
-    .gitignore
-    README.md
-    index.html
     package.json
-    package-lock.json
-    vite.config.js
-    eslint.config.js
+    index.html
     public/
-      captain-mascot.svg
-      rideflow-landscape.svg
-      rideflow-rider.svg
-      Smiling Biker on a Chopper.png
     src/
       App.jsx
-      App.css
-      index.css
-      main.jsx
-      assets/react.svg
+      components/
+        CaptainDetail.jsx
+        ConfirmRidePopUp.jsx
+        RidePopup.jsx
       context/
         CaptainContext.jsx
         UserContext.jsx
       pages/
         CaptainHome.jsx
+        CaptainRiding.jsx
         CaptainLogin.jsx
-        CaptainProtectWrapper.jsx
         CaptainRegister.jsx
+        CaptainProtectWrapper.jsx
         CaptainLogout.jsx
-        Home.jsx
-        Start.jsx
+        FinishRide.jsx
+        UserHome.jsx
         UserLogin.jsx
-        UserLogout.jsx
-        UserProtectWrapper.jsx
         UserRegister.jsx
+        UserProtectWrapper.jsx
+        UserLogout.jsx
+        ConfirmRide.jsx
+        WaitingForDriver.jsx
 ```
 
-The backend separates HTTP routes, controllers, database models, connection setup, and authentication middleware. The frontend keeps application routes in `App.jsx`, wraps the app with user and captain contexts in `main.jsx`, and organizes screens under `src/pages/`.
+The backend separates routes, controllers, database models, connection setup, and authentication middleware. Frontend routes live in `Frontend/src/App.jsx`; shared user and captain state is provided by React contexts in `Frontend/src/main.jsx`.
 
 ## Run locally
 
@@ -117,16 +94,16 @@ The backend separates HTTP routes, controllers, database models, connection setu
 - Node.js and npm
 - A MongoDB instance, local or hosted
 
-### 1. Configure and start the backend
+### Start the backend
 
-In a terminal at the repository root:
+From the repository root:
 
 ```bash
 cd Backend
 npm install
 ```
 
-Create `Backend/.env` with:
+Create `Backend/.env`:
 
 ```env
 MONGO_URL=mongodb://127.0.0.1:27017/rideflow
@@ -139,11 +116,11 @@ Start the API:
 node server.js
 ```
 
-The server listens on `http://localhost:3000`. CORS is currently configured to accept the Vite development origin `http://localhost:5173`.
+The API listens on `http://localhost:3000`. CORS is configured for the Vite origin `http://localhost:5173`.
 
-### 2. Install and start the frontend
+### Start the frontend
 
-Open a second terminal at the repository root:
+In another terminal from the repository root:
 
 ```bash
 cd Frontend
@@ -151,22 +128,24 @@ npm install
 npm run dev
 ```
 
-Vite serves the development app at `http://localhost:5173` by default.
+Vite serves the frontend at `http://localhost:5173` by default. Frontend API calls currently use `http://localhost:3000`.
 
 ## Frontend routes
 
-| Path | Page | Status |
+| Path | Page | Access |
 | --- | --- | --- |
-| `/` | Welcome / landing page | Implemented with responsive animated artwork |
-| `/login` | Rider login | Form submits to the rider login API |
-| `/register` | Rider registration | Form submits to the rider registration API |
-| `/captain-login` | Captain login | Form submits to the captain login API |
-| `/captain-register` | Captain registration | Form submits account and vehicle details to the captain registration API |
-| `/home` | Rider home | Protected route; page content is a placeholder |
-| `/user-logout` | Rider logout | Protected route |
-| `/captain-home` | Captain home | Protected route; page content is a placeholder |
+| `/` | Welcome page | Public |
+| `/login` | Rider login | Public |
+| `/register` | Rider registration | Public |
+| `/captain-login` | Captain login | Public |
+| `/captain-register` | Captain registration | Public |
+| `/home` | Rider booking experience | Protected |
+| `/user-logout` | Rider logout | Protected |
+| `/captain-home` | Captain dashboard and ride demo | Protected |
+| `/finish-ride` | Ride completion screen | Protected |
+| `/captain-logout` | Captain logout | Protected |
 
-The captain logout API and a `CaptainLogout.jsx` component are present, but there is currently no `/captain-logout` frontend route. The rider logout frontend page is registered at `/user-logout`.
+The captain riding panel is currently shown within the captain dashboard after the demo OTP is accepted; it does not have a separate route.
 
 ## API reference
 
@@ -174,18 +153,18 @@ All endpoints are mounted under `/api/auth`.
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
-| `POST` | `/user/register` | Create a rider account |
+| `POST` | `/user/register` | Register a rider |
 | `POST` | `/user/login` | Authenticate a rider |
-| `POST` | `/user/profile` | Return the authenticated rider profile |
+| `GET` | `/user/profile` | Return the authenticated rider profile |
 | `GET` | `/user/logout` | Log out a rider |
-| `POST` | `/captain/register` | Create a captain account and vehicle |
+| `POST` | `/captain/register` | Register a captain and vehicle |
 | `POST` | `/captain/login` | Authenticate a captain |
-| `POST` | `/captain/profile` | Return the authenticated captain profile |
+| `GET` | `/captain/profile` | Return the authenticated captain profile |
 | `GET` | `/captain/logout` | Log out a captain |
 
-Registration and login accept JSON request bodies. Profile requests authenticate using the `token` cookie or an `Authorization: Bearer YOUR_JWT` header.
+Registration and login accept JSON. Captain registration requires account fields plus a `vehicle` object. Vehicle type must be `bike`, `car`, or `auto`. Profile requests authenticate using the `token` cookie or an `Authorization: Bearer <token>` header.
 
-Rider registration (`POST /api/auth/user/register`):
+Rider registration example:
 
 ```json
 {
@@ -198,16 +177,7 @@ Rider registration (`POST /api/auth/user/register`):
 }
 ```
 
-Rider login and captain login both accept `email` and `password`:
-
-```json
-{
-  "email": "alex@example.com",
-  "password": "your-password"
-}
-```
-
-Captain registration (`POST /api/auth/captain/register`) accepts the same name and account fields plus a `vehicle` object:
+Captain registration example:
 
 ```json
 {
@@ -226,17 +196,7 @@ Captain registration (`POST /api/auth/captain/register`) accepts the same name a
 }
 ```
 
-`vehicleType` must be `bike`, `car`, or `auto`. The captain schema also tracks an `active`/`inactive` status, optional socket ID and location, and Mongoose creation/update timestamps. User and captain passwords are excluded from normal query results. Both account types require a first name of at least three characters and a unique email address.
-
-Successful registration returns HTTP `201`; successful login and logout return HTTP `200`. Login failures and duplicate accounts are reported with HTTP `401` by the current controllers. The API sets a `token` cookie after successful registration and login, but does not currently return that token in the JSON response. Blacklist records are configured to expire from MongoDB after 24 hours.
-
-### Data model details
-
-- **User:** required first name (minimum 3 characters), optional last name, required unique email, required password excluded from query results by default, and Mongoose timestamps.
-- **Captain:** same name and account fields; email is lowercased; includes required vehicle color and plate (minimum 3 characters), passenger capacity of at least 1, and required vehicle type (`bike`, `car`, or `auto`). Captain status defaults to `inactive`; socket ID and latitude/longitude are optional. Mongoose timestamps are enabled.
-- **Blacklisted token:** required unique token and a `createdAt` TTL index configured for 86,400 seconds.
-
-Registration hashes passwords using `bcrypt` with a cost factor of 10. JWTs are signed with `JWT_SECRET` and expire after 24 hours.
+Passwords are hashed with `bcrypt` using a cost factor of 10. JWTs are signed with `JWT_SECRET` and expire after 24 hours. User and captain models include timestamps; captain profiles also contain vehicle details and optional status, socket ID, and location.
 
 ## Development commands
 
@@ -249,12 +209,8 @@ Run these commands from `Frontend/`:
 | `npm run preview` | Preview the production build |
 | `npm run lint` | Run ESLint |
 
-The backend can be started with `node server.js` from `Backend/`. Automated test suites are not configured yet.
+There is no automated test suite configured yet. The backend `npm test` command is a placeholder.
 
-The backend's `npm test` script is a placeholder that exits with an error; no backend test suite is currently set up.
+## Branding and accessibility
 
-## Artwork
-
-The landing page uses assets from `Frontend/public/`: `Smiling Biker on a Chopper.png` for the rider illustration, `rideflow-landscape.svg` for the scrolling city background, and `captain-mascot.svg` for captain branding. `rideflow-rider.svg` is also included as a project asset.
-
-The application stylesheet loads DM Sans and Sora from Google Fonts and defines the rider, wheel-spoke, and scrolling scenery animations. Those animations are disabled when `prefers-reduced-motion: reduce` is active. The public `vite.svg` and source `assets/react.svg` are starter assets and are not part of the RideFlow landing-page artwork.
+The landing page uses assets from `Frontend/public/`, including the RideFlow rider and captain artwork and cityscape. The stylesheet uses DM Sans and Sora. Animated artwork and UI transitions use reduced-motion variants where configured.
