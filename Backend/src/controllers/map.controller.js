@@ -65,7 +65,7 @@ const getAutoCompleteSuggestion = async(req, res) => {
             })
         }
 
-        const {input} = req.query()
+        const {input} = req.query
 
         const suggestion = await mapService.getAutoCompleteSuggestions(input)
 
