@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { UserDataContext } from '../context/UserContext'
 import ConfirmRide from './ConfirmRide'
 import WaitingForDriver from './WaitingForDriver'
+import RideMap from '../components/RideMap'
 
 const UserHome = () => {
   const [pickup, setPickup] = useState('')
@@ -100,78 +101,8 @@ const UserHome = () => {
 
   return (
     <main className="relative min-h-[100svh] overflow-hidden bg-[#e8ebe4] text-[#19323a]">
-      <div className="absolute inset-0" aria-hidden="true">
-        <svg
-          viewBox="0 0 900 1100"
-          preserveAspectRatio="xMidYMid slice"
-          className="size-full"
-          role="img"
-          aria-label="Illustrated neighborhood map"
-        >
-          <defs>
-            <pattern id="city-blocks" width="92" height="82" patternUnits="userSpaceOnUse">
-              <rect x="7" y="7" width="34" height="25" rx="3" fill="#f8f8f3" />
-              <rect x="47" y="7" width="37" height="25" rx="3" fill="#f4f4ee" />
-              <rect x="7" y="39" width="34" height="35" rx="3" fill="#f5f5ef" />
-              <rect x="47" y="39" width="37" height="35" rx="3" fill="#faf9f4" />
-            </pattern>
-          </defs>
-          <rect width="900" height="1100" fill="#e9ece5" />
-          <rect width="900" height="1100" fill="url(#city-blocks)" />
-          <path d="M56 185c44-30 98-30 141-4l-16 132-118 8-29-61 22-75Z" fill="#d5e5c4" />
-          <path d="M635 690c69-34 154-14 186 41l-30 145-122 5-64-77 30-114Z" fill="#d7e8c8" />
-          <path d="M-65 836c97-40 174-38 263 3 98 46 177 49 286 7" fill="none" stroke="#d7e9d4" strokeWidth="52" />
-          <g fill="none" stroke="#fff" strokeWidth="17">
-            <path d="M-80 340c179-13 286 16 452 8s330-27 615 8" />
-            <path d="M-45 598c164-25 279-10 431 2s325 6 571-24" />
-            <path d="M160-65c-3 167 20 295 7 430s-17 300 7 800" />
-            <path d="M432-36c14 168-8 297 4 438s17 315-1 731" />
-            <path d="M696-44c-20 174-16 326-4 463s5 345-20 719" />
-            <path d="M-52 1004c169-15 338-20 495-8s319 20 512-13" />
-          </g>
-          <g fill="none" stroke="#d6d8d1" strokeWidth="2">
-            <path d="M-80 340c179-13 286 16 452 8s330-27 615 8" />
-            <path d="M-45 598c164-25 279-10 431 2s325 6 571-24" />
-            <path d="M160-65c-3 167 20 295 7 430s-17 300 7 800" />
-            <path d="M432-36c14 168-8 297 4 438s17 315-1 731" />
-            <path d="M696-44c-20 174-16 326-4 463s5 345-20 719" />
-            <path d="M-52 1004c169-15 338-20 495-8s319 20 512-13" />
-          </g>
-          <path d="M-35 276c171-30 278 29 446 8 152-20 301-78 538-20" fill="none" stroke="#f4f0dc" strokeWidth="27" />
-          <path d="M-35 276c171-30 278 29 446 8 152-20 301-78 538-20" fill="none" stroke="#e9c66c" strokeWidth="6" />
-          <path d="M230 785c49-67 95-76 147-45 66 40 95 18 153-48" fill="none" stroke="#fff" strokeWidth="10" strokeDasharray="1 13" strokeLinecap="round" />
-          <path d="M230 785c49-67 95-76 147-45 66 40 95 18 153-48" fill="none" stroke="#df7658" strokeWidth="4" strokeDasharray="1 13" strokeLinecap="round" />
-          <g fill="#6c7d73" fontFamily="DM Sans, sans-serif" fontSize="17" fontWeight="600" letterSpacing="2">
-            <text x="255" y="225">OLD TOWN</text>
-            <text x="525" y="490">RIVER MARKET</text>
-            <text x="100" y="715">RIDEFLOW DISTRICT</text>
-            <text x="605" y="940">GREEN PARK</text>
-          </g>
-          <g fill="#849187" fontFamily="DM Sans, sans-serif" fontSize="12" fontWeight="500">
-            <text x="279" y="440">Willow Street</text>
-            <text x="496" y="625">Central Avenue</text>
-            <text x="120" y="930">Market Road</text>
-          </g>
-          <g transform="translate(382 738)">
-            <circle r="23" fill="#fff" opacity=".8" />
-            <circle r="14" fill="#19323a" />
-            <circle r="5" fill="#fff" />
-          </g>
-          <g transform="translate(525 692)">
-            <path d="M0-29c-15 0-27 12-27 27 0 19 27 44 27 44S27 17 27-2C27-17 15-29 0-29Z" fill="#d96950" stroke="#fff" strokeWidth="5" />
-            <circle cy="-3" r="8" fill="#fff" />
-          </g>
-          <g transform="translate(670 392) rotate(-17)">
-            <rect x="-15" y="-25" width="30" height="50" rx="9" fill="#19323a" />
-            <rect x="-10" y="-16" width="20" height="14" rx="4" fill="#dce8e4" />
-            <circle cx="-9" cy="17" r="2" fill="#f2c56c" />
-            <circle cx="9" cy="17" r="2" fill="#f2c56c" />
-          </g>
-          <g transform="translate(250 520) rotate(12)">
-            <rect x="-12" y="-21" width="24" height="42" rx="8" fill="#315d67" />
-            <rect x="-8" y="-13" width="16" height="12" rx="3" fill="#dce8e4" />
-          </g>
-        </svg>
+      <div className="absolute inset-0 z-0">
+        <RideMap className="z-0" />
       </div>
 
       <header className="absolute inset-x-0 top-0 z-10 flex items-center justify-between p-4 sm:p-6">

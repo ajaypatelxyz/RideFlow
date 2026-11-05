@@ -5,6 +5,7 @@ import CaptainDetail from '../components/CaptainDetail'
 import RidePopup from '../components/RidePopup'
 import ConfirmRidePopUp from '../components/ConfirmRidePopUp'
 import CaptainRiding from './CaptainRiding'
+import RideMap from '../components/RideMap'
 
 const CaptainHome = () => {
   const {captain} = useContext(CaptainDataContext)
@@ -48,63 +49,8 @@ const CaptainHome = () => {
 
   return (
     <main className="relative min-h-[100svh] overflow-hidden bg-[#e8ebe4] text-[#19323a]">
-      <div className="absolute inset-x-0 top-0 h-[63svh] overflow-hidden sm:h-[68svh]" aria-hidden="true">
-        <svg viewBox="0 0 900 760" preserveAspectRatio="xMidYMid slice" className="size-full">
-          <defs>
-            <pattern id="captain-city-blocks" width="170" height="140" patternUnits="userSpaceOnUse">
-              <rect x="10" y="12" width="62" height="45" rx="4" fill="#f8f8f3" />
-              <rect x="82" y="12" width="76" height="45" rx="4" fill="#f4f4ee" />
-              <rect x="10" y="68" width="62" height="61" rx="4" fill="#f5f5ef" />
-              <rect x="82" y="68" width="76" height="61" rx="4" fill="#faf9f4" />
-            </pattern>
-          </defs>
-          <rect width="900" height="760" fill="#e9ece5" />
-          <rect width="900" height="760" fill="url(#captain-city-blocks)" />
-          <path d="M610 78c72-37 151-12 183 49l-20 112-122 5-64-69 23-97Z" fill="#d5e5c4" />
-          <path d="M112 456c71-44 157-28 190 26l-24 112-125 7-64-63 23-82Z" fill="#d7e8c8" />
-          <g fill="none" stroke="#fff" strokeWidth="25">
-            <path d="M-70 156c196-20 302 12 455 0s310-29 594 8" />
-            <path d="M-48 373c170-17 300-5 442 7s335 4 558-21" />
-            <path d="M-75 614c209-12 320-12 489-1s297 18 564-10" />
-            <path d="M196-60c-2 137 19 245 5 350s-18 280 8 534" />
-            <path d="M468-64c12 153-9 270 3 390s17 287-1 565" />
-            <path d="M737-53c-17 157-15 272-3 400s5 286-18 552" />
-            <path d="M-18 700 850 52" />
-          </g>
-          <g fill="none" stroke="#d6d8d1" strokeWidth="2">
-            <path d="M-70 156c196-20 302 12 455 0s310-29 594 8" />
-            <path d="M-48 373c170-17 300-5 442 7s335 4 558-21" />
-            <path d="M-75 614c209-12 320-12 489-1s297 18 564-10" />
-            <path d="M196-60c-2 137 19 245 5 350s-18 280 8 534" />
-            <path d="M468-64c12 153-9 270 3 390s17 287-1 565" />
-            <path d="M737-53c-17 157-15 272-3 400s5 286-18 552" />
-            <path d="M-18 700 850 52" />
-          </g>
-          <g fill="#849187" fontFamily="DM Sans, sans-serif" fontSize="18" fontWeight="500">
-            <text x="84" y="126">Market Street</text>
-            <text x="548" y="330">Civic Center</text>
-            <text x="232" y="535">Westfield Plaza</text>
-            <text x="667" y="590">Garden District</text>
-            <text x="334" y="284">Central Avenue</text>
-          </g>
-          <path d="M77 532 279 385 407 286 638 111" fill="none" stroke="#19323a" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" opacity=".8" />
-          <path d="M77 532 279 385 407 286 638 111" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="1 13" />
-          <g transform="translate(78 532)">
-            <circle r="19" fill="#fff" opacity=".9" />
-            <circle r="10" fill="#19323a" />
-            <circle r="3.5" fill="#fff" />
-          </g>
-          <g transform="translate(638 111)">
-            <path d="M0-27c-14 0-25 11-25 25 0 18 25 42 25 42S25 16 25-2C25-16 14-27 0-27Z" fill="#d96950" stroke="#fff" strokeWidth="5" />
-            <circle cy="-3" r="7" fill="#fff" />
-          </g>
-          <g transform="translate(350 326) rotate(48)">
-            <rect x="-15" y="-25" width="30" height="50" rx="9" fill="#19323a" />
-            <rect x="-10" y="-16" width="20" height="14" rx="4" fill="#dce8e4" />
-            <circle cx="-9" cy="17" r="2" fill="#f2c56c" />
-            <circle cx="9" cy="17" r="2" fill="#f2c56c" />
-          </g>
-        </svg>
+      <div className="absolute inset-x-0 top-0 z-0 h-[63svh] overflow-hidden sm:h-[68svh]">
+        <RideMap label="Your current location" />
       </div>
 
       <header className="absolute inset-x-0 top-0 z-10 flex items-center justify-between p-4 sm:p-6">
